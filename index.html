@@ -2,44 +2,140 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>IP Lookup Tool — IPv4 & IPv6</title>
+  <title>IP Lookup Tool — Dark Theme</title>
   <style>
-    body { font-family: sans-serif; background: #f4f6f8; color: #333; padding: 20px; }
-    .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin: 20px auto; max-width: 800px; padding: 20px; }
-    input, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 4px; border: 1px solid #ccc; }
-    button { background: #007BFF; color: #fff; border: none; cursor: pointer; }
-    button:hover { background: #0056b3; }
-    dl { display: grid; grid-template-columns: 1fr 2fr; gap: 8px 16px; }
-    dt { font-weight: bold; }
-    pre { margin: 0; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
-    #map { height: 300px; margin-top: 20px; border-radius: 8px; }
-    .download-buttons { margin-top: 15px; display: flex; gap: 10px; }
-    .download-buttons button { flex: 1; }
+    /* Dark theme base */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      padding: 20px;
+      margin: 0;
+    }
+
+    /* Card container */
+    .card {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      margin: 20px auto;
+      max-width: 800px;
+      padding: 25px;
+    }
+
+    /* Inputs and buttons */
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+
+    input {
+      background-color: #2c2c2c;
+      color: #fff;
+    }
+
+    input::placeholder {
+      color: #aaa;
+    }
+
+    button {
+      background-color: #ffffff;
+      color: #121212;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #e0e0e0;
+    }
+
+    /* Field list */
+    dl {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 8px 16px;
+    }
+
+    dt {
+      font-weight: bold;
+      color: #bbbbbb;
+    }
+
+    dd pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #ffffff;
+      background: #2c2c2c;
+      padding: 6px;
+      border-radius: 4px;
+    }
+
+    /* Map */
+    #map {
+      height: 300px;
+      margin-top: 20px;
+      border-radius: 12px;
+      border: 1px solid #333;
+    }
+
+    /* Download buttons */
+    .download-buttons {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .download-buttons button {
+      flex: 1;
+      background-color: #ffffff;
+      color: #121212;
+    }
+
+    .download-buttons button:hover {
+      background-color: #e0e0e0;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
   </style>
+
+  <!-- Leaflet CSS & JS for map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
   <div class="card">
-    <h2>IP Lookup (IPv4 & IPv6)</h2>
+    <h2>IP Lookup Tool</h2>
     <input id="ipInput" type="text" placeholder="Enter IPv4 or IPv6 address" />
     <button onclick="lookupIP()">Lookup</button>
+
     <div id="output"></div>
+
     <div class="download-buttons" id="downloadBtns" style="display:none;">
       <button onclick="downloadResult('json')">Download JSON</button>
       <button onclick="downloadResult('csv')">Download CSV</button>
     </div>
+
     <div id="map"></div>
   </div>
 
   <script>
-    let lastResult = null; // store the latest lookup result
+    let lastResult = null;
 
     async function lookupIP() {
       const ip = document.getElementById('ipInput').value.trim();
       if (!ip) return alert('Please enter an IP address.');
 
-      const apiKey = '628960c99ac34992940f56d8e012b05f'; // Your API key
+      const apiKey = '628960c99ac34992940f56d8e012b05f';
       const url = `https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&ip=${encodeURIComponent(ip)}`;
 
       const container = document.getElementById('output');
@@ -76,7 +172,7 @@
           'Languages': data.languages
         };
 
-        lastResult = fields; // save for download
+        lastResult = fields;
 
         let html = '<dl>';
         Object.entries(fields).forEach(([k,v]) => {
@@ -87,10 +183,10 @@
 
         document.getElementById('downloadBtns').style.display = 'flex';
 
-        // Show map
+        // Map
         if (data.latitude && data.longitude) {
           const mapDiv = document.getElementById('map');
-          mapDiv.innerHTML = ''; // reset
+          mapDiv.innerHTML = '';
           const map = L.map('map').setView([data.latitude, data.longitude], 8);
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
@@ -108,7 +204,6 @@
 
     function downloadResult(format) {
       if (!lastResult) return alert("No data to download!");
-
       let blob, filename;
       if (format === 'json') {
         blob = new Blob([JSON.stringify(lastResult, null, 2)], {type: "application/json"});
@@ -118,7 +213,6 @@
         blob = new Blob([rows.join("\n")], {type: "text/csv"});
         filename = "ip-lookup.csv";
       }
-
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
