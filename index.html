@@ -1,373 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP Geolocation Lookup</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            width: 100%;
-            max-width: 600px;
-        }
-
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
-            font-weight: 300;
-        }
-
-        .input-group {
-            margin-bottom: 30px;
-        }
-
-        .input-container {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e1e5e9;
-            border-radius: 50px;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .result {
-            margin-top: 30px;
-            padding: 25px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            border-left: 4px solid #667eea;
-            display: none;
-        }
-
-        .result.show {
-            display: block;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .result h3 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-        }
-
-        .info-item {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: #667eea;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-        }
-
-        .info-value {
-            color: #333;
-            font-size: 16px;
-            word-wrap: break-word;
-        }
-
-        .error {
-            background: #ffe6e6;
-            color: #d63031;
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #d63031;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .error.show {
-            display: block;
-            animation: slideIn 0.3s ease;
-        }
-
-        .loading {
-            text-align: center;
-            color: #667eea;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .note {
-            margin-top: 20px;
-            padding: 15px;
-            background: #e3f2fd;
-            border-radius: 10px;
-            color: #1565c0;
-            font-size: 14px;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>IP Lookup Tool — IPv4 & IPv6</title>
+  <style>
+    body { font-family: sans-serif; background: #f4f6f8; color: #333; padding: 20px; }
+    .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin: 20px auto; max-width: 700px; padding: 20px; }
+    input, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 4px; border: 1px solid #ccc; }
+    button { background: #007BFF; color: #fff; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    dl { display: grid; grid-template-columns: 1fr 2fr; gap: 8px 16px; }
+    dt { font-weight: bold; }
+    pre { margin: 0; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌍 IP Geolocation Lookup</h1>
-        
-        <div class="input-group">
-            <div class="input-container">
-                <input type="text" id="ipInput" placeholder="Enter IP address (IPv4: 8.8.8.8 or IPv6: 2600:1700:5265:b010::1)" />
-            </div>
-            <button class="btn" onclick="lookupIP()">Lookup Location</button>
-        </div>
+  <div class="card">
+    <h2>IP Lookup (IPv4 & IPv6)</h2>
+    <input id="ipInput" type="text" placeholder="Enter IPv4 or IPv6 address" />
+    <button onclick="lookupIP()">Lookup</button>
+    <div id="output"></div>
+  </div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            Looking up IP location...
-        </div>
+  <script>
+    async function lookupIP() {
+      const ip = document.getElementById('ipInput').value.trim();
+      if (!ip) return alert('Please enter an IP address.');
 
-        <div class="error" id="error"></div>
+      const apiKey = '628960c99ac34992940f56d8e012b05f'; // Your API key
+      const url = `https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&ip=${encodeURIComponent(ip)}&include=security`;
 
-        <div class="result" id="result">
-            <h3>📍 Location Information</h3>
-            <div class="info-grid" id="infoGrid"></div>
-        </div>
+      const container = document.getElementById('output');
+      container.innerHTML = '<p>Loading...</p>';
 
-        <div class="note">
-            <strong>Note:</strong> This tool supports both IPv4 (192.168.1.1) and IPv6 (2001:db8::1) addresses. Results show approximate geographic location and may not be precise for mobile devices or VPN connections.
-        </div>
-    </div>
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-    <script>
-        function isValidIP(ip) {
-            // Remove any leading/trailing whitespace
-            ip = ip.trim();
-            
-            // IPv4 regex - standard dotted decimal
-            const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-            
-            // Test for IPv4 first
-            if (ipv4Regex.test(ip)) {
-                return true;
-            }
-            
-            // For IPv6 - very permissive validation
-            if (ip.includes(':')) {
-                // Check for valid hexadecimal characters and colons only
-                const validChars = /^[0-9a-fA-F:]+$/;
-                const colonCount = (ip.match(/:/g) || []).length;
-                
-                // Basic IPv6 requirements: hex chars + colons, at least 2 colons
-                if (validChars.test(ip) && colonCount >= 2) {
-                    return true;
-                }
-            }
-            
-            return false;
+        if (data.message) {
+          container.innerHTML = `<p style="color: red;">Error: ${data.message}</p>`;
+          return;
         }
 
-        function showLoading() {
-            document.getElementById('loading').classList.add('show');
-            document.getElementById('result').classList.remove('show');
-            document.getElementById('error').classList.remove('show');
-            document.querySelector('.btn').disabled = true;
-        }
+        const fields = {
+          'IP': data.ip,
+          'Continent': data.continent_name,
+          'Country': `${data.country_name} (${data.country_code2})`,
+          'State/Region': data.state_prov,
+          'City': data.city,
+          'Latitude, Longitude': `${data.latitude}, ${data.longitude}`,
+          'Timezone': data.time_zone ? data.time_zone.name : '',
+          'Currency': data.currency ? `${data.currency.name} (${data.currency.code})` : '',
+          'ISP': data.isp,
+          'Organization': data.organization,
+          'ASN': data.asn ? `${data.asn.name} (AS${data.asn.asn})` : '',
+          'Proxy/VPN/TOR/Threat': data.security ? JSON.stringify(data.security, null, 2) : ''
+        };
 
-        function hideLoading() {
-            document.getElementById('loading').classList.remove('show');
-            document.querySelector('.btn').disabled = false;
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.textContent = message;
-            errorDiv.classList.add('show');
-            hideLoading();
-        }
-
-        function displayResults(data) {
-            const infoGrid = document.getElementById('infoGrid');
-            infoGrid.innerHTML = '';
-
-            const fields = [
-                { label: 'IP Address', value: data.ip || 'N/A' },
-                { label: 'Country', value: data.country || 'N/A' },
-                { label: 'Region', value: data.region || 'N/A' },
-                { label: 'City', value: data.city || 'N/A' },
-                { label: 'ZIP Code', value: data.zip || 'N/A' },
-                { label: 'Latitude', value: data.lat || 'N/A' },
-                { label: 'Longitude', value: data.lon || 'N/A' },
-                { label: 'Timezone', value: data.timezone || 'N/A' },
-                { label: 'ISP', value: data.isp || 'N/A' },
-                { label: 'Organization', value: data.org || 'N/A' }
-            ];
-
-            fields.forEach(field => {
-                const infoItem = document.createElement('div');
-                infoItem.className = 'info-item';
-                infoItem.innerHTML = `
-                    <div class="info-label">${field.label}</div>
-                    <div class="info-value">${field.value}</div>
-                `;
-                infoGrid.appendChild(infoItem);
-            });
-
-            document.getElementById('result').classList.add('show');
-            hideLoading();
-        }
-
-        async function lookupIP() {
-            const ipInput = document.getElementById('ipInput').value.trim();
-            
-            if (!ipInput) {
-                showError('Please enter an IP address');
-                return;
-            }
-
-            if (!isValidIP(ipInput)) {
-                showError('Please enter a valid IPv4 (e.g. 192.168.1.1) or IPv6 (e.g. 2600:1700:5265:b010::1) address');
-                return;
-            }
-
-            showLoading();
-
-            try {
-                // Try to use ipapi.co which should work with HTTPS
-                const response = await fetch(`https://ipapi.co/${encodeURIComponent(ipInput)}/json/`);
-                const data = await response.json();
-
-                if (data.error) {
-                    showError(data.reason || 'Failed to lookup IP address');
-                    return;
-                }
-
-                // Map the response to our expected format
-                const mappedData = {
-                    ip: data.ip || ipInput,
-                    country: data.country_name || 'N/A',
-                    region: data.region || 'N/A',
-                    city: data.city || 'N/A',
-                    zip: data.postal || 'N/A',
-                    lat: data.latitude || 'N/A',
-                    lon: data.longitude || 'N/A',
-                    timezone: data.timezone || 'N/A',
-                    isp: data.org || 'N/A',
-                    org: data.org || 'N/A'
-                };
-
-                displayResults(mappedData);
-
-            } catch (error) {
-                // If API fails, show that the validation worked but API is blocked
-                showError(`✅ IPv6 validation successful for "${ipInput}"! However, the geolocation API is blocked by security policy. In a normal web environment, this would show the location data.`);
-            }
-        }
-
-        // Allow Enter key to trigger lookup
-        document.getElementById('ipInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                lookupIP();
-            }
+        let html = '<dl>';
+        Object.entries(fields).forEach(([k,v]) => {
+          if (v) html += `<dt>${k}</dt><dd><pre>${v}</pre></dd>`;
         });
+        html += '</dl>';
+        container.innerHTML = html;
 
-        // Set placeholder on load
-        window.addEventListener('load', function() {
-            document.getElementById('ipInput').placeholder = 'Enter IP address (IPv4: 8.8.8.8 or IPv6: 2600:1700:5265:b010::1)';
-        });
-    </script>
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p style="color: red;">Request failed. Check console.</p>';
+      }
+    }
+  </script>
 </body>
 </html>
