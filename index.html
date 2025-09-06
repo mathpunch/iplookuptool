@@ -5,14 +5,17 @@
   <title>IP Lookup Tool — IPv4 & IPv6</title>
   <style>
     body { font-family: sans-serif; background: #f4f6f8; color: #333; padding: 20px; }
-    .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin: 20px auto; max-width: 700px; padding: 20px; }
+    .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin: 20px auto; max-width: 800px; padding: 20px; }
     input, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 4px; border: 1px solid #ccc; }
     button { background: #007BFF; color: #fff; border: none; cursor: pointer; }
     button:hover { background: #0056b3; }
     dl { display: grid; grid-template-columns: 1fr 2fr; gap: 8px 16px; }
     dt { font-weight: bold; }
     pre { margin: 0; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+    #map { height: 300px; margin-top: 20px; border-radius: 8px; }
   </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
   <div class="card">
@@ -20,6 +23,7 @@
     <input id="ipInput" type="text" placeholder="Enter IPv4 or IPv6 address" />
     <button onclick="lookupIP()">Lookup</button>
     <div id="output"></div>
+    <div id="map"></div>
   </div>
 
   <script>
@@ -46,14 +50,20 @@
           'IP': data.ip,
           'Continent': data.continent_name,
           'Country': `${data.country_name} (${data.country_code2})`,
+          'Country TLD': data.country_tld,
+          'Calling Code': data.calling_code,
           'State/Region': data.state_prov,
           'City': data.city,
           'Latitude, Longitude': `${data.latitude}, ${data.longitude}`,
-          'Timezone': data.time_zone ? data.time_zone.name : '',
-          'Currency': data.currency ? `${data.currency.name} (${data.currency.code})` : '',
           'ISP': data.isp,
           'Organization': data.organization,
-          'ASN': data.asn ? `${data.asn.name} (AS${data.asn.asn})` : ''
+          'ASN': data.asn ? `${data.asn.name} (AS${data.asn.asn})` : '',
+          'Timezone': data.time_zone ? data.time_zone.name : '',
+          'Timezone Offset': data.time_zone ? data.time_zone.offset : '',
+          'Current Time': data.time_zone ? data.time_zone.current_time : '',
+          'Is DST?': data.time_zone ? data.time_zone.is_dst : '',
+          'Currency': data.currency ? `${data.currency.name} (${data.currency.code}, ${data.currency.symbol})` : '',
+          'Languages': data.languages
         };
 
         let html = '<dl>';
@@ -62,6 +72,19 @@
         });
         html += '</dl>';
         container.innerHTML = html;
+
+        // Show map
+        if (data.latitude && data.longitude) {
+          const mapDiv = document.getElementById('map');
+          mapDiv.innerHTML = ''; // reset
+          const map = L.map('map').setView([data.latitude, data.longitude], 8);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+          }).addTo(map);
+          L.marker([data.latitude, data.longitude]).addTo(map)
+            .bindPopup(`${data.city}, ${data.country_name}`)
+            .openPopup();
+        }
 
       } catch (err) {
         console.error(err);
