@@ -28,7 +28,7 @@
       if (!ip) return alert('Please enter an IP address.');
 
       const apiKey = '628960c99ac34992940f56d8e012b05f'; // Your API key
-      const url = `https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&ip=${encodeURIComponent(ip)}&include=security`;
+      const url = `https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}&ip=${encodeURIComponent(ip)}`;
 
       const container = document.getElementById('output');
       container.innerHTML = '<p>Loading...</p>';
@@ -53,8 +53,7 @@
           'Currency': data.currency ? `${data.currency.name} (${data.currency.code})` : '',
           'ISP': data.isp,
           'Organization': data.organization,
-          'ASN': data.asn ? `${data.asn.name} (AS${data.asn.asn})` : '',
-          'Proxy/VPN/TOR/Threat': data.security ? JSON.stringify(data.security, null, 2) : ''
+          'ASN': data.asn ? `${data.asn.name} (AS${data.asn.asn})` : ''
         };
 
         let html = '<dl>';
