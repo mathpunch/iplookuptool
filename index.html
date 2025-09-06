@@ -13,6 +13,8 @@
     dt { font-weight: bold; }
     pre { margin: 0; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
     #map { height: 300px; margin-top: 20px; border-radius: 8px; }
+    .download-buttons { margin-top: 15px; display: flex; gap: 10px; }
+    .download-buttons button { flex: 1; }
   </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -23,10 +25,16 @@
     <input id="ipInput" type="text" placeholder="Enter IPv4 or IPv6 address" />
     <button onclick="lookupIP()">Lookup</button>
     <div id="output"></div>
+    <div class="download-buttons" id="downloadBtns" style="display:none;">
+      <button onclick="downloadResult('json')">Download JSON</button>
+      <button onclick="downloadResult('csv')">Download CSV</button>
+    </div>
     <div id="map"></div>
   </div>
 
   <script>
+    let lastResult = null; // store the latest lookup result
+
     async function lookupIP() {
       const ip = document.getElementById('ipInput').value.trim();
       if (!ip) return alert('Please enter an IP address.');
@@ -36,6 +44,7 @@
 
       const container = document.getElementById('output');
       container.innerHTML = '<p>Loading...</p>';
+      document.getElementById('downloadBtns').style.display = 'none';
 
       try {
         const res = await fetch(url);
@@ -54,7 +63,8 @@
           'Calling Code': data.calling_code,
           'State/Region': data.state_prov,
           'City': data.city,
-          'Latitude, Longitude': `${data.latitude}, ${data.longitude}`,
+          'Latitude': data.latitude,
+          'Longitude': data.longitude,
           'ISP': data.isp,
           'Organization': data.organization,
           'ASN': data.asn ? `${data.asn.name} (AS${data.asn.asn})` : '',
@@ -66,12 +76,16 @@
           'Languages': data.languages
         };
 
+        lastResult = fields; // save for download
+
         let html = '<dl>';
         Object.entries(fields).forEach(([k,v]) => {
           if (v) html += `<dt>${k}</dt><dd><pre>${v}</pre></dd>`;
         });
         html += '</dl>';
         container.innerHTML = html;
+
+        document.getElementById('downloadBtns').style.display = 'flex';
 
         // Show map
         if (data.latitude && data.longitude) {
@@ -90,6 +104,27 @@
         console.error(err);
         container.innerHTML = '<p style="color: red;">Request failed. Check console.</p>';
       }
+    }
+
+    function downloadResult(format) {
+      if (!lastResult) return alert("No data to download!");
+
+      let blob, filename;
+      if (format === 'json') {
+        blob = new Blob([JSON.stringify(lastResult, null, 2)], {type: "application/json"});
+        filename = "ip-lookup.json";
+      } else if (format === 'csv') {
+        const rows = Object.entries(lastResult).map(([k,v]) => `"${k}","${v}"`);
+        blob = new Blob([rows.join("\n")], {type: "text/csv"});
+        filename = "ip-lookup.csv";
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
