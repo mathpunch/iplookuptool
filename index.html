@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>IP Lookup Tool — Dark Theme</title>
   <style>
-    /* Dark theme base */
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #121212;
@@ -13,7 +12,6 @@
       margin: 0;
     }
 
-    /* Card container */
     .card {
       background-color: #1e1e1e;
       border-radius: 12px;
@@ -23,7 +21,6 @@
       padding: 25px;
     }
 
-    /* Inputs and buttons */
     input, button {
       width: 100%;
       padding: 12px;
@@ -54,7 +51,6 @@
       background-color: #e0e0e0;
     }
 
-    /* Field list */
     dl {
       display: grid;
       grid-template-columns: 1fr 2fr;
@@ -76,7 +72,6 @@
       border-radius: 4px;
     }
 
-    /* Map */
     #map {
       height: 300px;
       margin-top: 20px;
@@ -84,7 +79,6 @@
       border: 1px solid #333;
     }
 
-    /* Download buttons */
     .download-buttons {
       margin-top: 15px;
       display: flex;
@@ -108,7 +102,6 @@
     }
   </style>
 
-  <!-- Leaflet CSS & JS for map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
@@ -183,7 +176,6 @@
 
         document.getElementById('downloadBtns').style.display = 'flex';
 
-        // Map
         if (data.latitude && data.longitude) {
           const mapDiv = document.getElementById('map');
           mapDiv.innerHTML = '';
